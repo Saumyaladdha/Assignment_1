@@ -32,4 +32,7 @@ cd pdf-chatbot```
 
 
 ### Install Python Dependencies
+```bash
+python -m venv venv
+source venv/bin/activate```
 
