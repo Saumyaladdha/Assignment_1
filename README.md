@@ -26,9 +26,10 @@ This project is a **PDF Chatbot** built using Streamlit, HuggingFace Transformer
 
 #### **Clone the Repository**
 
-```bash   
+``` 
 `git clone https://github.com/your-repo/pdf-chatbot.git`  
 `cd pdf-chatbot`
+```
 
 ### **Install Python Dependencies**
 
