@@ -74,32 +74,41 @@ The Dockerfile uses **Python 3.10** as the base image and sets the `/app` direct
 Dockerfile  
 
 `# Use the official Python image`  
+
 ```FROM python:3.10```
 
-`# Set the working directory inside the container`  
+`# Set the working directory inside the container`
+
 ```WORKDIR /app```
 
-`# Copy the requirements.txt file first to leverage Docker cache`  
+`# Copy the requirements.txt file first to leverage Docker cache`
+
 ```COPY requirements.txt .```
 
 `# Install required Python packages`  
+
 ```RUN pip install -r requirements.txt --default-timeout=100 future```
 
 `# Copy the rest of the application files to the container's working directory`  
+
 ```COPY . .```
 
 `# Expose the port that Streamlit will run on`  
+
 ```EXPOSE 8501```
 
-`# Command to run your Streamlit application`  
+`# Command to run your Streamlit application` 
+
 ```CMD ["streamlit", "run", "chatbot_app.py"]```
+
+---
 
 #### **Build and Run with Docker**
 
 1. **Build the Docker image**:
 
 
-```docker build -t pdf-chatbot .```
+```docker build -t pdf-chatbot ```
 
 2. **Run the Docker container**:
 
@@ -118,11 +127,9 @@ Open your browser and go to `http://localhost:8501`.
 
 The model used is `"MBZUAI/LaMini-T5-738M"`, which is loaded via HuggingFace's Transformers library. Both the tokenizer and model checkpoints are initialized.
 
-python  
-Copy code  
-`checkpoint = "MBZUAI/LaMini-T5-738M"`  
-`tokenizer = AutoTokenizer.from_pretrained(checkpoint)`  
-`base_model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)`
+```checkpoint = "MBZUAI/LaMini-T5-738M"  
+tokenizer = AutoTokenizer.from_pretrained(checkpoint)  
+base_model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)```
 
 ---
 
