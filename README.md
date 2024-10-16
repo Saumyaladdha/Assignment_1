@@ -27,24 +27,22 @@ This project is a **PDF Chatbot** built using Streamlit, HuggingFace Transformer
 #### **Clone the Repository**
 
 ``` 
-`git clone https://github.com/your-repo/pdf-chatbot.git`  
-`cd pdf-chatbot`
+git clone https://github.com/your-repo/pdf-chatbot.git 
+cd pdf-chatbot
 ```
 
 ### **Install Python Dependencies**
 
 1. **Create a virtual environment** (optional but recommended):
 
-bash  
-Copy code  
-`python -m venv venv`  
-`` source venv/bin/activate  # On Windows use `venv\Scripts\activate` ``
+```
+python -m venv venv  
+ source venv/bin/activate  # On Windows use `venv\Scripts\activate ```
 
 2. **Install the required packages**:
 
-bash  
-Copy code  
-`pip install -r requirements.txt`
+``` 
+pip install -r requirements.txt ```
 
 ---
 
@@ -54,15 +52,12 @@ Copy code
 
 1. **Navigate to the project directory**:
 
-bash  
-Copy code  
-`cd pdf-chatbot`
+
+```cd pdf-chatbot```
 
 2. **Run the application**:
 
-bash  
-Copy code  
-`streamlit run chatbot_app.py`
+```streamlit run chatbot_app.py```
 
 3. **Access the chatbot interface**:
 
@@ -77,41 +72,39 @@ Open your browser and go to `http://localhost:8501`.
 The Dockerfile uses **Python 3.10** as the base image and sets the `/app` directory inside the container as the working directory. Dependencies are installed via `requirements.txt`, and the Streamlit application is exposed on port `8501`.
 
 Dockerfile  
-Copy code  
+
 `# Use the official Python image`  
-`FROM python:3.10`
+```FROM python:3.10```
 
 `# Set the working directory inside the container`  
-`WORKDIR /app`
+```WORKDIR /app```
 
 `# Copy the requirements.txt file first to leverage Docker cache`  
-`COPY requirements.txt .`
+```COPY requirements.txt .```
 
 `# Install required Python packages`  
-`RUN pip install -r requirements.txt --default-timeout=100 future`
+```RUN pip install -r requirements.txt --default-timeout=100 future```
 
 `# Copy the rest of the application files to the container's working directory`  
-`COPY . .`
+```COPY . .```
 
 `# Expose the port that Streamlit will run on`  
-`EXPOSE 8501`
+```EXPOSE 8501```
 
 `# Command to run your Streamlit application`  
-`CMD ["streamlit", "run", "chatbot_app.py"]`
+```CMD ["streamlit", "run", "chatbot_app.py"]```
 
 #### **Build and Run with Docker**
 
 1. **Build the Docker image**:
 
-bash  
-Copy code  
-`docker build -t pdf-chatbot .`
+
+```docker build -t pdf-chatbot .```
 
 2. **Run the Docker container**:
 
-bash  
-Copy code  
-`docker run -p 8501:8501 pdf-chatbot`
+
+```docker run -p 8501:8501 pdf-chatbot```
 
 3. **Access the chatbot interface**:
 
@@ -137,12 +130,11 @@ Copy code
 
 To extract content from PDF files, the **PDFMinerLoader** is used. The content is split into smaller chunks using **RecursiveCharacterTextSplitter** to handle large documents more effectively.
 
-python  
-Copy code  
-`loader = PDFMinerLoader(os.path.join(root, file))`  
-`documents = loader.load()`  
-`text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=500)`  
-`texts = text_splitter.split_documents(documents)`
+```
+loader = PDFMinerLoader(os.path.join(root, file))
+documents = loader.load()
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=500) 
+texts = text_splitter.split_documents(documents) ```
 
 ---
 
@@ -150,14 +142,13 @@ Copy code
 
 The chatbot uses **SentenceTransformerEmbeddings** to convert the split PDF text into embeddings, which can then be stored and retrieved using **Chroma**. These embeddings help retrieve relevant sections of the PDF based on user queries.
 
-python  
-Copy code  
-`embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")`  
-`db = Chroma.from_documents(`  
-    `texts,`  
-    `embeddings,`  
-    `client=chroma_client`  
-`)`
+
+```embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")`  
+db = Chroma.from_documents(  
+    texts, 
+    embeddings, 
+    client=chroma_client 
+)```
 
 ---
 
@@ -165,28 +156,25 @@ Copy code
 
 For question-answering, **LangChain**'s `RetrievalQA` chain is used. It allows the system to retrieve relevant chunks from the vector store (Chroma) and pass them to the language model for response generation.
 
-python  
-Copy code  
-`qa = RetrievalQA.from_chain_type(`  
-    `llm=local_llm,`  
-    `chain_type="stuff",`  
-    `retriever=retriever,`  
-    `return_source_documents=True`  
-`)`
+  
+```qa = RetrievalQA.from_chain_type(  
+    llm=local_llm,`  
+    chain_type="stuff",  
+    retriever=retriever, 
+    return_source_documents=True 
+)```
 
 ---
 
 ### **Text-to-Speech (TTS)**
 
 The chatbot is capable of converting its responses to speech using **Google's Text-to-Speech (gTTS)** library.
-
-python  
-Copy code  
-`def text_to_speech(text):`  
-    `tts = gTTS(text=text, lang='en')`  
-    `with tempfile.NamedTemporaryFile(delete=False) as fp:`  
-        `tts.save(fp.name)`  
-        `return fp.name`
+ 
+```def text_to_speech(text):  
+    tts = gTTS(text=text, lang='en')
+    with tempfile.NamedTemporaryFile(delete=False) as fp:  
+        tts.save(fp.name)`  
+        return fp.name```
 
 ---
 
@@ -194,12 +182,11 @@ Copy code
 
 The chatbot maintains a session history of the conversation, displaying both the user's input and the chatbot's responses.
 
-python  
-Copy code  
-`if "generated" not in st.session_state:`  
-    `st.session_state["generated"] = ["I am ready to help you"]`  
-`if "past" not in st.session_state:`  
-    `st.session_state["past"] = ["Hey there!"]`
+
+```if "generated" not in st.session_state:  
+    st.session_state["generated"] = ["I am ready to help you"]  
+if "past" not in st.session_state:  
+    st.session_state["past"] = ["Hey there!"]```
 
 ---
 
@@ -207,13 +194,12 @@ Copy code
 
 The application uses **ChromaDB** to store embeddings persistently. This configuration uses **duckdb+parquet** for persistent storage.
 
-python  
-Copy code  
-`CHROMA_SETTINGS = Settings(`  
-    `chroma_db_impl='duckdb+parquet',`  
-    `persist_directory='db',`  
-    `anonymized_telemetry=False`  
-`)`
+
+```CHROMA_SETTINGS = Settings( 
+    chroma_db_impl='duckdb+parquet', 
+    persist_directory='db',
+    anonymized_telemetry=False 
+)```
 
 ---
 
