@@ -115,6 +115,7 @@ Dockerfile
 
 ```docker run -p 8501:8501 pdf-chatbot```
 
+
 3. **Access the chatbot interface**:
 
 Open your browser and go to `http://localhost:8501`.
@@ -125,13 +126,15 @@ Open your browser and go to `http://localhost:8501`.
 
 ### **Model and Device Configuration**
 
-The model used is `"MBZUAI/LaMini-T5-738M"`, which is loaded via HuggingFace's Transformers library. Both the tokenizer and model checkpoints are initialized.
+The model used is "MBZUAI/LaMini-T5-738M", which is loaded via HuggingFace's Transformers library. Both the tokenizer and model checkpoints are initialized.
 
 ---
 
-```checkpoint = "MBZUAI/LaMini-T5-738M"  
+```
+checkpoint = "MBZUAI/LaMini-T5-738M"  
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)  
-base_model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)```
+base_model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)
+```
 
 ---
 
@@ -145,7 +148,8 @@ To extract content from PDF files, the **PDFMinerLoader** is used. The content i
 loader = PDFMinerLoader(os.path.join(root, file))
 documents = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=500) 
-texts = text_splitter.split_documents(documents) ```
+texts = text_splitter.split_documents(documents)
+ ```
 
 ---
 
@@ -156,12 +160,14 @@ The chatbot uses **SentenceTransformerEmbeddings** to convert the split PDF text
 ---
 
 
-```embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")`  
+```
+embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")`  
 db = Chroma.from_documents(  
     texts, 
     embeddings, 
     client=chroma_client 
-)```
+)
+```
 
 ---
 
@@ -170,12 +176,14 @@ db = Chroma.from_documents(
 For question-answering, **LangChain**'s `RetrievalQA` chain is used. It allows the system to retrieve relevant chunks from the vector store (Chroma) and pass them to the language model for response generation.
 
   
-```qa = RetrievalQA.from_chain_type(  
+```
+qa = RetrievalQA.from_chain_type(  
     llm=local_llm,`  
     chain_type="stuff",  
     retriever=retriever, 
     return_source_documents=True 
-)```
+)
+```
 
 ---
 
@@ -183,11 +191,13 @@ For question-answering, **LangChain**'s `RetrievalQA` chain is used. It allows t
 
 The chatbot is capable of converting its responses to speech using **Google's Text-to-Speech (gTTS)** library.
  
-```def text_to_speech(text):  
+```
+def text_to_speech(text):  
     tts = gTTS(text=text, lang='en')
     with tempfile.NamedTemporaryFile(delete=False) as fp:  
         tts.save(fp.name)`  
-        return fp.name```
+        return fp.name
+```
 
 ---
 
@@ -196,10 +206,12 @@ The chatbot is capable of converting its responses to speech using **Google's Te
 The chatbot maintains a session history of the conversation, displaying both the user's input and the chatbot's responses.
 
 
-```if "generated" not in st.session_state:  
+```
+if "generated" not in st.session_state:  
     st.session_state["generated"] = ["I am ready to help you"]  
 if "past" not in st.session_state:  
-    st.session_state["past"] = ["Hey there!"]```
+    st.session_state["past"] = ["Hey there!"]
+```
 
 ---
 
@@ -208,11 +220,13 @@ if "past" not in st.session_state:
 The application uses **ChromaDB** to store embeddings persistently. This configuration uses **duckdb+parquet** for persistent storage.
 
 
-```CHROMA_SETTINGS = Settings( 
+```
+CHROMA_SETTINGS = Settings( 
     chroma_db_impl='duckdb+parquet', 
     persist_directory='db',
     anonymized_telemetry=False 
-)```
+)
+```
 
 ---
 
