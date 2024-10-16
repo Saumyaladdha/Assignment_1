@@ -127,6 +127,8 @@ Open your browser and go to `http://localhost:8501`.
 
 The model used is `"MBZUAI/LaMini-T5-738M"`, which is loaded via HuggingFace's Transformers library. Both the tokenizer and model checkpoints are initialized.
 
+---
+
 ```checkpoint = "MBZUAI/LaMini-T5-738M"  
 tokenizer = AutoTokenizer.from_pretrained(checkpoint)  
 base_model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)```
@@ -136,6 +138,8 @@ base_model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint)```
 ### **PDF Data Ingestion**
 
 To extract content from PDF files, the **PDFMinerLoader** is used. The content is split into smaller chunks using **RecursiveCharacterTextSplitter** to handle large documents more effectively.
+
+---
 
 ```
 loader = PDFMinerLoader(os.path.join(root, file))
@@ -148,6 +152,8 @@ texts = text_splitter.split_documents(documents) ```
 ### **Embeddings & Vector Store**
 
 The chatbot uses **SentenceTransformerEmbeddings** to convert the split PDF text into embeddings, which can then be stored and retrieved using **Chroma**. These embeddings help retrieve relevant sections of the PDF based on user queries.
+
+---
 
 
 ```embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")`  
